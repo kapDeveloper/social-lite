@@ -1,0 +1,1 @@
+res.cookie("Cookie Name:", "Cookie Content")
