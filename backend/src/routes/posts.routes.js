@@ -7,10 +7,12 @@ import {
   getEditPost,
 } from "../controllers/posts.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 router.route("/send-posts").post(
+  verifyJWT,
   upload.fields([
     {
       name: "img",

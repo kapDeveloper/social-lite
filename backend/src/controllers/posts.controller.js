@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Posts } from "../models/posts.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -40,6 +40,7 @@ const sendPosts = asyncHandler(async (req, res) => {
       .status(500)
       .json(new ApiError(500, "Something went wrong while sending post"));
   }
+
   return res
     .status(200)
     .json(new ApiResponse(200, createPost, "post sent successfully"));

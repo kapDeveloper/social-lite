@@ -4,11 +4,34 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-//register logic
+
+const generateAccessAndRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    // save at db
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: true });
+
+    return { accessToken, refreshToken };
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Something went wrong while generating refresh and access token"
+    );
+  }
+};
+// register
 const register = asyncHandler(async (req, res) => {
   const { userName, email, password, confirmPassword } = req.body;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
 
   if (
     [email, userName, password, confirmPassword].some(
@@ -45,7 +68,8 @@ const register = asyncHandler(async (req, res) => {
   const user = await User.create({
     userName,
     email,
-    password: hashedPassword,
+    // password: hashedPassword,
+    password,
     confirmPassword,
   });
 
@@ -61,17 +85,9 @@ const register = asyncHandler(async (req, res) => {
       );
   }
 
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      {
-        createUser,
-        token: await createUser.generateToken(),
-        userId: createUser._id.toString(),
-      },
-      "Register Successfully"
-    )
-  );
+  return res
+    .status(200)
+    .json(new ApiResponse(200, createUser, "Register Successfully"));
 });
 
 // login logic
@@ -103,14 +119,26 @@ const login = asyncHandler(async (req, res) => {
       );
   }
 
-  const token = await createUser.generateToken();
-  console.log("Token: ", token);
-
-  res.cookie("jwtToken", token, {
-    expires: new Date(Date.now() + 25892000000),
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  const options = {
     httpOnly: true,
-  });
-  return res.json(new ApiResponse(200, createUser, "Login successfully"));
+    secure: true,
+  };
+
+  // const token = await createUser.generateToken();
+  // console.log("Token: ", token);
+
+  // res.cookie("jwtToken", token, {
+  //   expires: new Date(Date.now() + 25892000000),
+  //   httpOnly: true,
+  // });
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(new ApiResponse(200, createUser, "Login successfully"));
 });
 
 export { register, login };

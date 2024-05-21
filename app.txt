@@ -1,1 +1,54 @@
 res.cookie("Cookie Name:", "Cookie Content")
+
+
+
+Krishna Patil
+Hello
+
+Below are the updates as of 20 May, 2024.
+
+## List of Completed Tasks:
+
+Backend:-
+
+=> I have added protected route in app  restricted route 
+=> I have generate JWT tokens when user login and store it on Database 
+=> I have used AsyncThunk to make apis
+=> I have added postsSlice and usersSlice 
+=> I have made extraReducer to handle pending, fulfilled and reject request
+
+
+Work in progrss:
+=> Token are generating but not saved in cookie so next day I will be used localStorage to store token at client side
+   and verify them and give access of the profile page so they can send post
+
+Would you please check the updates and let me know your thoughts?
+
+Thank you.
+
+
+
+
+
+Krishna Patil
+Hello
+
+Below are the updates as of 20 May, 2024.
+
+## List of Completed Tasks:
+
+Backend:-
+
+=> I have generated access token and refresh token 
+=> I have stored them in localStorage,
+=> I have get this token from localStorage at frontend,
+=> I have verify them with database
+
+
+Work in progrss:
+=> Token are generating but not saved in cookie so next day I will be used localStorage to store token at client side
+   and verify them and give access of the profile page so they can send post
+
+Would you please check the updates and let me know your thoughts?
+
+Thank you.
